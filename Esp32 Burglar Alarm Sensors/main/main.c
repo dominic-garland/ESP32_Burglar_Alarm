@@ -19,7 +19,7 @@ bool sensor_warm = false;
 
 uint8_t wifi_channel = 12;
 
-uint8_t burglar_alarm_mac[] = {0xf4, 0x65, 0x0b, 0x42, 0xde, 0x90};
+uint8_t burglar_alarm_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 static const char *TAG = "MAIN";
 
