@@ -61,19 +61,20 @@ About:
   FreeRTOS:
       FreeRTOS is used for both the Burglar Alarm and the Burglar Alarm Sensor. The job of FreeRTOS is to prioritise tasks and run higher priority tasks before lower priority tasks(the higher the number the higher the priority). The prioritisation chosen allows for easy       future expansion. The task priorities are as follows:
 
-//////////////////////////////////////////////////////////////////Priorities to be changed
         Burglar Alarm:
-          Priority Level 8:
+          Priority Level 3:
             alarm_task
-          Priority Level 4:
-            espnow_receive_task
-            espnow_send_task
+          Priority Level 2:
+            espnow_receive_tasK
             web_server_task
             wifi_task
+          Priority Level 1:
+            espnow_send_task
             
         Burglar Alarm Sensor:
-          Priority Level 4:
+          Priority Level 3:
             espnow_send_task
+          Priority Level 2:
             espnow_receive_task
           Priority Level 1:
             sensor_deactivate_task
