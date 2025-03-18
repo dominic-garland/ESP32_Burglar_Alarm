@@ -59,7 +59,9 @@ About:
       The Burglar Alarm ESP32 uses WIFI for web server purposes allowing the alarm to be controlled through the Companion App or through the URIs. The Burglar Alarm Sensor setups WIFI up however, does not connect to the WIFI. This is because WIFI needs to be initialised 
       for ESP-NOW to work in this implementation. The code could be edited to use BLE instead of WIFI for ESP-NOW however, if WIFI is removed then the Companion App and the web URIs would no longer be able to be used.
   FreeRTOS:
-      FreeRTOS is used for both the Burglar Alarm and the Burglar Alarm Sensor. The job of FreeRTOS is to prioritise tasks and run higher priority tasks before lower priority tasks. The prioritisation chosen allows for easy future expansion. The task priorities are as          follows:
+      FreeRTOS is used for both the Burglar Alarm and the Burglar Alarm Sensor. The job of FreeRTOS is to prioritise tasks and run higher priority tasks before lower priority tasks(the higher the number the higher the priority). The prioritisation chosen allows for easy       future expansion. The task priorities are as follows:
+
+//////////////////////////////////////////////////////////////////Priorities to be changed
         Burglar Alarm:
           Priority Level 8:
             alarm_task
