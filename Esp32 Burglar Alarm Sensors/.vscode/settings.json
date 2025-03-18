@@ -1,0 +1,21 @@
+{
+    "C_Cpp.intelliSenseEngine": "default",
+    "idf.espIdfPathWin": "C:\\Users\\domin\\esp\\v5.4\\esp-idf",
+    "idf.pythonInstallPath": "C:\\Users\\domin\\.espressif\\tools\\idf-python\\3.11.2\\python.exe",
+    "idf.openOcdConfigs": [
+        "interface/ftdi/esp32_devkitj_v1.cfg",
+        "target/esp32.cfg"
+    ],
+    "idf.portWin": "COM3",
+    "idf.toolsPathWin": "C:\\Users\\domin\\.espressif",
+    "files.associations": {
+        "freertos.h": "c",
+        "esp_err.h": "c",
+        "esp_now.h": "c",
+        "string.h": "c",
+        "nvs_flash.h": "c",
+        "time.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled",
+    "idf.flashType": "UART"
+}
