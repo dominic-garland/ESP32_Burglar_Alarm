@@ -204,7 +204,7 @@ void sensor_active_task(void *pvParameters)
                 ESP_LOGI(TAG, "Movement Detected!");
                 gpio_set_level(LED_GPIO_PIN, 1); 
                 movement_dectected = true;
-                xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 4, &espnow_send_task_handle, tskNO_AFFINITY);
+                xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 3, &espnow_send_task_handle, tskNO_AFFINITY);
                 vTaskDelay(pdMS_TO_TICKS(60000));  // Wait 60 seconds to reset
                 if(gpio_get_level(IR_SENSOR) == 0)
                 {
@@ -238,7 +238,7 @@ void wifi_task(void *pvParameter)////init wifi and ensures connection
 void sensor_deactivate_task(void *pvParameters)
 {
     esp_now_unregister_send_cb();
-    xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 4, &espnow_send_task_handle, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 3, &espnow_send_task_handle, tskNO_AFFINITY);
     if((espnow_send_task_handle != NULL))
     {
         vTaskDelete(sensor_active_task_handle);
@@ -286,7 +286,7 @@ void app_main(void)
     setup_nvs();
     xTaskCreate(wifi_task, "wifi_task", 4096, NULL, 5, 0);
     vTaskDelay(1000);
-    xTaskCreatePinnedToCore(espnow_receive_task, "ESP-NOW Receive Task", 4096, NULL, 4, &espnow_receive_task_handle, 0);
+    xTaskCreatePinnedToCore(espnow_receive_task, "ESP-NOW Receive Task", 4096, NULL, 2, &espnow_receive_task_handle, 0);
     ESP_LOGI(TAG,"Warming Up Sensor");
     vTaskDelay(pdMS_TO_TICKS(60000));//sensor needs 1 minute to activate
     sensor_warm = true;
