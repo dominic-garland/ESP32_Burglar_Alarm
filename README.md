@@ -34,10 +34,28 @@ Testing:
 To test the system is working it is easiest to use the Unity Companion App with the ESPs however, you can also go onto the web server.
 Assuming the devices have been setup correctly the Burglar Alarm code can be uploaded onto an ESP32. 
 Once turned on it could take up to a minute for it to start functioning. After a minute you can use the Unity Companion App to test if the device is working. 
+
 1.Ensure that the device running the app is on the same WIFI as the ESP32. 
 2.Change the IP address in the companion app to match the ESP32. This can be done in settings on the app.
 3.Once returned to the main menu the app should start working. The textbox in the center should say either "Alarm active" or "Alarm inactive". If it says "Cannot connect to device" try restarting the app. If this does not work and the device is on the same WIFI try pressing the reset button on the ESP32. Sometimes the ESP32 fails at connecting to WIFI and therefore a simple restart can amend this.
 4.Now the Burglar Alarm Sensor can be turned on. This will take up to 2 minutes to be ready due to the sensor needing to warm-up. After 2 minutes it should automatically connect to the other ESP32 assuming it is in range. To test if they are connected set the alarm to active and have movement in front of the sensor. If the ESP32 are working correctly the alarm will be triggered causing the buzzer to go off and a new log to be created in the logs menu on the Unity Companion App. Once confirmed it is working you can press the deactivate alarm button to switch off the alarm. When the alarm is triggered the sensor needs 1 and a half minutes to reset.
+
+About:
+  Burglar Alarm:
+    This should take ~60 seconds to start up. To confirm that it has loaded correctly the web server should be tested. This can be tested by using the Unity Companion App which will show on the landing page if it connected to the device or using the web server URIs can      be used. A guide to the functions avaliable can be seen in the web server section. If these methods do not work ensure that the ESP32 is on the same WIFI as the device that is trying to access it. Also ensure that the static IP address set is avaliable. If these         checks do not result in the device working try restarting the device as sometimes the ESP32 struggles with connecting to the WIFI.  
+  Burglar Alarm Sensor:
+    This should take ~2 minutes to start up because the IR-sensor needs 60 seconds to warm-up upon first loading.
+    IR-Sensor:
+      Upon first loading the IR-Sensor needs 60 serconds to warm up to ensure correct functionality. The IR sensor used will detect if there is movement through Infrared. If movement is detected the program stops detecting movement for 60 seconds or until reset to             ensure detections aren't duplicated. The sensor should be adjusted using the 2 potentiometers on the device to control sensitivity and output delay for the best functionality. Also refer to the sensor manual to ensure the sensor is being used correctly and there         is no interferance such as light sources near to the module.
+  Unity Companion App:
+      The Unity Companion App communicates with the Burglar Alarm by sending web requests and therefore is not needed as direct connection to the web server can be used. Information about this process can be found in the web server section. This means the app requires         the device to be on the same WIFI as the ESP32 Burglar Alarm in order to function. It also means that the IP address needs to be correctly set in the settings page of the app. To reduce issues the ESP32 should have a reserved IP address. The Companion App allows         users to see the alarm status(active/deactivated), set the alarm status(active/deactivated), view the intruder logs, and reset the logs.
+  ESP-NOW:
+      ESP-NOW is used to connect the Burglar Alarm to the sensors and the sensors to the Burglar Alarm. ESP-NOW is a "wireless communication protocol defined by Espressif(creators of the ESP32)". This implementation of ESP-NOW uses WIFI instead of BLE. ESP-NOW is used 
+      for the Burglar Alarm to turn on/off the sensing for the sensors and it also allows the sensors to communicate wirelessly to the Burglar Alarm when movement is detected. For the Burglar Alarm ESP-NOW needs to be on the same channel as WIFI as the ESP32 only has 
+      1 antenna that is shared by both devices. The Burglar Alarm Sensor does not have this problem as it is not connected to WIFI. Both the Burglar Alarm and the Burglar Alarm Sensor need to be on the same channel to communicate. 
+  WIFI:
+      The Burglar Alarm ESP32 uses WIFI for web server purposes allowing the alarm to be controlled through the Companion App or through the URIs. The Burglar Alarm Sensor setups WIFI up however, does not connect to the WIFI. This is because WIFI needs to be initialised 
+      for ESP-NOW to work in this implementation. The code could be edited to use BLE instead of WIFI for ESP-NOW however, if WIFI is removed then the Companion App and the web URIs would no longer be able to be used.
 
 WebServer:
 The need for the Unity Companion App can be bypassed by going to the URIs for the web server. To access this type the local IP address of the ESP32 followed by the command. For example to access the logs you would go to (IP address)/logs . So for an IP address of 192.168.1.5 you would type 192.168.1.5/logs
