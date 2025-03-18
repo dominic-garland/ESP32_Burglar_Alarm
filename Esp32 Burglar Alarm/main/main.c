@@ -231,7 +231,7 @@ void on_data_received(const esp_now_recv_info_t *info, const uint8_t *data, int 
             ESP_LOGI(TAG, "Motion Detected!");
             if (!(alarm_tripped)) {
                 alarm_tripped = true;
-                xTaskCreatePinnedToCore(alarm_task, "Alarm Task", 2048, NULL, 8, &alarm_task_handle, tskNO_AFFINITY);
+                xTaskCreatePinnedToCore(alarm_task, "Alarm Task", 2048, NULL, 3, &alarm_task_handle, tskNO_AFFINITY);
             }
             break;      
         case 2:
@@ -249,9 +249,9 @@ void on_data_received(const esp_now_recv_info_t *info, const uint8_t *data, int 
 void alarm_on_setting()//function for alarm activation
 {
     alarm_active = true;
-    xTaskCreatePinnedToCore(espnow_receive_task, "ESP-NOW Receive Task", 4096, NULL, 4, &espnow_receive_task_handle, 1);
+    xTaskCreatePinnedToCore(espnow_receive_task, "ESP-NOW Receive Task", 4096, NULL, 2, &espnow_receive_task_handle, 1);
     esp_now_register_recv_cb(on_data_received);
-    xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 4, &espnow_send_task_handle, 1);
+    xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 1, &espnow_send_task_handle, 1);
     ESP_LOGI(TAG,"Alarm on");
 }
 
@@ -259,7 +259,7 @@ void alarm_off_setting()//function for alarm de-activation
 { 
     alarm_active = false;
     alarm_tripped = false;
-    xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 4, &espnow_send_task_handle, 1);   
+    xTaskCreatePinnedToCore(espnow_send_task, "ESP-NOW Send Task", 4096, NULL, 1, &espnow_send_task_handle, 1);   
     esp_err_t err = esp_now_unregister_recv_cb();
     if(err != ESP_OK)
     {
@@ -569,7 +569,7 @@ void wifi_task(void *pvParameters)//init wifi
     else 
     {
         ESP_LOGI(TAG, "Static IP set successfully: " IPSTR, IP2STR(&ip_info.ip));
-        xTaskCreatePinnedToCore(web_server_task, "Web Server Task", 8192, NULL, 4, &web_server_task_handle, 1);
+        xTaskCreatePinnedToCore(web_server_task, "Web Server Task", 8192, NULL, 2, &web_server_task_handle, 1);
     }
     while (1)//monitor Wifi connection
     {
@@ -666,6 +666,6 @@ void app_main(void)//setup for main burglar alarm
     config_io(); 
     setup_nvs();
     vTaskDelay(1000);
-    xTaskCreatePinnedToCore(wifi_task,"WIFI Task",4092,NULL,4,&wifi_task_handle,0);
+    xTaskCreatePinnedToCore(wifi_task,"WIFI Task",4092,NULL,2,&wifi_task_handle,0);
     log_mutex = xSemaphoreCreateMutex();
 }
