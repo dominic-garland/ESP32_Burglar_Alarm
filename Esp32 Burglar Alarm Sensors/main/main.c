@@ -67,8 +67,6 @@ void setup_nvs()//setups non volatile storage - needed for wifi and ESP-NOW
 
 void add_peer_device(uint8_t *macAddress) // Adds sensor to ESP-NOW
 {
-    uint8_t lmk[16] = {0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F, 0x70, 0x81,
-        0x92, 0xA3, 0xB4, 0xC5, 0xD6, 0xE7, 0xF8, 0x09};
     esp_wifi_get_channel(&wifi_channel, NULL);
     esp_now_peer_info_t peerInfo = {};
     memcpy(peerInfo.peer_addr, macAddress, ESP_NOW_ETH_ALEN);
