@@ -21,6 +21,12 @@ uint8_t wifi_channel = 12;
 
 uint8_t burglar_alarm_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
+uint8_t pmk[16] = {0x76, 0xDF, 0x7F, 0x59, 0x77, 0xAF, 0x72, 0xF7,
+    0x7D, 0xE7, 0x5B, 0x6D, 0x72, 0xF5, 0xC6, 0x23};
+
+uint8_t lmk[16] = {0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F, 0x70, 0x81,
+    0x92, 0xA3, 0xB4, 0xC5, 0xD6, 0xE7, 0xF8, 0x09};
+
 static const char *TAG = "MAIN";
 
 void espnow_receive_task(void *pvParameters);
@@ -59,23 +65,28 @@ void setup_nvs()//setups non volatile storage - needed for wifi and ESP-NOW
     }
 }
 
-void add_peer_device(uint8_t *macAddress) 
+void add_peer_device(uint8_t *macAddress) // Adds sensor to ESP-NOW
 {
+    uint8_t lmk[16] = {0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F, 0x70, 0x81,
+        0x92, 0xA3, 0xB4, 0xC5, 0xD6, 0xE7, 0xF8, 0x09};
     esp_wifi_get_channel(&wifi_channel, NULL);
     esp_now_peer_info_t peerInfo = {};
-    memcpy(peerInfo.peer_addr, macAddress, 6);
+    memcpy(peerInfo.peer_addr, macAddress, ESP_NOW_ETH_ALEN);
     peerInfo.channel = wifi_channel;
     peerInfo.ifidx = ESP_IF_WIFI_STA;
-    peerInfo.encrypt = false;
-    esp_now_add_peer(&peerInfo);
+    peerInfo.encrypt = true;
+    memcpy(peerInfo.lmk, lmk, ESP_NOW_KEY_LEN); // Set the LMK for encryption
+    ESP_LOGI(TAG, "Assigned LMK: %02X%02X%02X%02X...%02X", lmk[0], lmk[1], lmk[2], lmk[3], lmk[15]);
+    esp_err_t err = esp_now_add_peer(&peerInfo);
     if (!esp_now_is_peer_exist(macAddress))
     {
         ESP_LOGI(TAG, "Peer not found. Attempting to add");
+        
         int retry_count = 20;
         while (retry_count > 0)
         {
             ESP_LOGI(TAG, "Attempting to add peer on channel: %d", peerInfo.channel);
-            esp_err_t err = esp_now_add_peer(&peerInfo);
+            err = esp_now_add_peer(&peerInfo);
             if (err != ESP_OK)
             {
                 ESP_LOGE(TAG, "Failed to add peer: %s. Retrying", esp_err_to_name(err));
@@ -88,7 +99,6 @@ void add_peer_device(uint8_t *macAddress)
                 break;
             }
         }
-        
         if (retry_count == 0)
         {
             ESP_LOGE(TAG, "Failed to add peer after multiple attempts.");
@@ -96,11 +106,23 @@ void add_peer_device(uint8_t *macAddress)
     }
     else
     {
-        ESP_LOGI(TAG, "Peer added sucessfully");
+        esp_now_peer_num_t peer_count;
+        esp_now_get_peer_num(&peer_count);
+        ESP_LOGI(TAG, "Total peers: %d", peer_count.total_num);
+        ESP_LOGI(TAG, "Peer added successfully");
+    }
+    if (esp_now_is_peer_exist(macAddress))
+    {
+        ESP_LOGI(TAG, "Peer exists and is ready for communication.");
+        ESP_LOGI(TAG, "Encryption enabled: %s", peerInfo.encrypt ? "YES" : "NO");
+    }
+    else
+    {
+        ESP_LOGE(TAG, "Peer failed to add correctly. Check encryption settings.");
     }
 }
 
-esp_err_t setup_espnow(uint8_t *macAddress)//setup for ESP-NOW
+esp_err_t setup_espnow(uint8_t *macAddress) // Setup for ESP-NOW
 {
     esp_err_t err = esp_now_init();
     if (err != ESP_OK)
@@ -109,9 +131,31 @@ esp_err_t setup_espnow(uint8_t *macAddress)//setup for ESP-NOW
         return err;
     }
     ESP_LOGI(TAG, "ESP-NOW initialized successfully");
+
+    // Set the PMK for encryption
+    err = esp_now_set_pmk(pmk);
+    if (err != ESP_OK) 
+    {
+        ESP_LOGE(TAG, "Failed to set PMK: %s", esp_err_to_name(err));
+        return err;
+    }
+    ESP_LOGI(TAG, "PMK set successfully");
+
     gpio_set_level(LED_GPIO_PIN, 1);
-    ESP_LOGI(TAG, "Current Wi-Fi Channel: %d", wifi_channel);
+    ESP_LOGI(TAG, "Current Wifi Channel: %d", wifi_channel);
     add_peer_device(macAddress);
+    esp_now_peer_num_t peer_count;
+    esp_now_get_peer_num(&peer_count);
+    ESP_LOGI(TAG, "Total peers: %d", peer_count.total_num);
+    if (peer_count.total_num > 0)
+    {
+        ESP_LOGI(TAG, "Peer added. Proceeding with communication.");
+    }
+    else
+    {
+        ESP_LOGE(TAG, "No peers added. Check peer settings and encryption.");
+    }
+
     return ESP_OK;
 }
 
