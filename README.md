@@ -17,18 +17,16 @@ This ESP32 project consists of folders:
 
 Setup:
 1. Download all files including the Unity Companion App
-2. Ensure your ESP-IDF has the correct menu configurations. The changes can be found in the MenuConfig section and can be seen in z/z/z  ...... ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-3. ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-4. ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-5. In Burglar Alarm insert the WIFI SSID for "#define WIFI_SSID      "Insert Wifi SSID" and insert password for "#define WIFI_PASSWORD  "Insert Wifi Password" . Both of these can be found at the top of the file.
-6. In Burglar Alarm and Burglar Alarm Sensors insert the mac address(in hexadecimal format) of the relevant ESP32 for "uint8_t sensor_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};" and "burglar_alarm_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};"
-7. Set the "wifi_channel" for both Burglar Alarm and Burglar Alarm Sensors. Ensure these are on the same channel otherwise ESP-NOW will not work.
-8. In Burglar Alarm change static IP settings "IP4_ADDR(&ip_info.ip, 192, 168, 1, 200);//Static IP address" "IP4_ADDR(&ip_info.gw, 192, 168, 1, 1);//Default gateway"   "IP4_ADDR(&ip_info.netmask, 255, 255, 255, 0);//subnet mask"
+2. Ensure your ESP-IDF has the correct menu configurations. Use the sdkconfig file to use the menuconfig that was used for this project. 
+3. In Burglar Alarm insert the WIFI SSID for "#define WIFI_SSID "Insert Wifi SSID" and insert password for "#define WIFI_PASSWORD  "Insert Wifi Password" . Both of these can be found at the top of the file.
+4. In Burglar Alarm and Burglar Alarm Sensors insert the mac address(in hexadecimal format) of the relevant ESP32 for "uint8_t sensor_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};" and "burglar_alarm_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};"
+5. Set the "wifi_channel" for both Burglar Alarm and Burglar Alarm Sensors. Ensure these are on the same channel otherwise ESP-NOW will not work.
+6. In Burglar Alarm change static IP settings "IP4_ADDR(&ip_info.ip, 192, 168, 1, 200);//Static IP address" "IP4_ADDR(&ip_info.gw, 192, 168, 1, 1);//Default gateway"   "IP4_ADDR(&ip_info.netmask, 255, 255, 255, 0);//subnet mask"
 DHCP was disabled due to problems obtaining an IP address
-6.Change the IP address in the Unity Companion App to match the IP address of Burglar Alarm
-7.If you are not in the UK then the NTP timezone will need to be changed. The timezone needs to be changed for the Burglar Alarm file and on this line "setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02", 1);"
-8.If you are not in the UK then the regulatory rules that the ESP32s follow may need to be changed. For example the WIFI channels allowed in the UK are 1-13 however, specific country restrictions should be researched to ensure functionality.
-9.The IR sensor used is a HC-SR501 PIR Infrared Motion Detection Sensor. This motion sensor has 2 potentiometers that can be adjusted. These should be adjusted based on your requirements and your model. Please refer to documentation provided with your sensor.
+7.Change the IP address in the Unity Companion App to match the IP address of Burglar Alarm
+8.If you are not in the UK then the NTP timezone will need to be changed. The timezone needs to be changed for the Burglar Alarm file and on this line "setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02", 1);"
+9.If you are not in the UK then the regulatory rules that the ESP32s follow may need to be changed. For example the WIFI channels allowed in the UK are 1-13 however, specific country restrictions should be researched to ensure functionality.
+10.The IR sensor used is a HC-SR501 PIR Infrared Motion Detection Sensor. This motion sensor has 2 potentiometers that can be adjusted. These should be adjusted based on your requirements and your model. Please refer to documentation provided with your sensor.
 
 Testing:
 To test the system is working it is easiest to use the Unity Companion App with the ESPs however, you can also go onto the web server.
@@ -90,5 +88,3 @@ There are 5 commands available:
   Get Status - retrieves alarm status. (/get_status)
 The web pages are extremely basic and do not confirm if the command has worked. Therefore if using the web pages ensure each command has worked correctly. For example if you wanted to activate the alarm you would visit the get status page after to ensure the alarm has been set correctly.
 
-
-MenuConfig:
