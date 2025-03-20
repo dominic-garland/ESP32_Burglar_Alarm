@@ -8,7 +8,8 @@ https://drive.google.com/file/d/14aeFLBAw0lD5uuB7Utj5Otp15ORYoUO6/view?usp=shari
 THIS FILE IS A WIP
 
 
-
+Description:
+This is an ESP32 Burglar Alarm system. This system is written in C and uses ESP-IDF development framework. This project can be broken into 3 parts which are the Burglar Alarm, the Burglar Alarm Sensors, and a Secirty Alarm Companion App developed in Unity. This system uses ESP-NOW to wirelessly connect the Burglar Alarm with it's sensors. This allows the sensors to alert if there is an intruder and allows the Burglar Alarm to turn on/off the sensors to save power. 
 
 This ESP32 project consists of folders:
 1.Burglar Alarm - contains code for the burglar alarm itself
@@ -17,9 +18,9 @@ This ESP32 project consists of folders:
 
 Setup:
 1. Download all files including the Unity Companion App
-2. Ensure your ESP-IDF has the correct menu configurations. Use the sdkconfig file to use the menuconfig that was used for this project. 
-3. In Burglar Alarm insert the WIFI SSID for "#define WIFI_SSID "Insert Wifi SSID" and insert password for "#define WIFI_PASSWORD  "Insert Wifi Password" . Both of these can be found at the top of the file.
-4. In Burglar Alarm and Burglar Alarm Sensors insert the mac address(in hexadecimal format) of the relevant ESP32 for "uint8_t sensor_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};" and "burglar_alarm_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};"
+2. Ensure your ESP-IDF has the correct menu configurations. Use the sdkconfig file to use the menuconfig that was used for this project. The IDF version used for this project is version 5.4
+3. In Burglar Alarm insert the WIFI SSID for ```#define WIFI_SSID Insert Wifi SSID``` and insert password for ```#define WIFI_PASSWORD Insert Wifi Password``` . Both of these can be found at the top of the file.
+4. In Burglar Alarm and Burglar Alarm Sensors insert the mac address(in hexadecimal format) of the relevant ESP32 for ```uint8_t sensor_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};``` and ```burglar_alarm_mac[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};```
 5. In Burglar Alarm and Burglar Alarm Sensors change the "pmk" and the "lmk". These are used for ESP-NOW encryption between the Burglar Alarm and the sensors. Both of these need to be the same in each file. So the Sensor pmk should match the Burglar Alarm pmk. The pmk and lmk should be a randomised for security purposes.
 6. Set the "wifi_channel" for both Burglar Alarm and Burglar Alarm Sensors. Ensure these are on the same channel otherwise ESP-NOW will not work.
 7. In Burglar Alarm change static IP settings "IP4_ADDR(&ip_info.ip, 192, 168, 1, 200);//Static IP address" "IP4_ADDR(&ip_info.gw, 192, 168, 1, 1);//Default gateway"   "IP4_ADDR(&ip_info.netmask, 255, 255, 255, 0);//subnet mask"
@@ -43,7 +44,9 @@ About:
   Burglar Alarm:
     This should take ~60 seconds to start up. To confirm that it has loaded correctly the web server should be tested. This can be tested by using the Unity Companion App which will show on the landing page if it connected to the device or using the web server URIs can      be used. A guide to the functions available can be seen in the web server section. If these methods do not work ensure that the ESP32 is on the same WIFI as the device that is trying to access it. Also ensure that the static IP address set is available. If these         checks do not result in the device working try restarting the device as sometimes the ESP32 struggles with connecting to the WIFI.  
     Logs:
-      Logs are stored in the device NVS(non-volatile storage) meaning that alerts will be stored even when rebooted. When the alarm is triggered the device automatically records the time of the event. Upon starting the device will get the time from 216.239.35.12 which         is the IP address for time.google.com . It will then sync this time every 10 seconds to ensure that the correct time is recorded. The maximum logs stored is 10 however, this can be increased if necessary by changing "MAX_LOG_ENTRIES". If the logs are reset the         old logs cannot be restored so caution should be taken when using this feature. 
+      Logs are stored in the device NVS(non-volatile storage) meaning that alerts will be stored even when rebooted. When the alarm is triggered the device automatically records the time of the event. Upon starting the device will get the time from 216.239.35.12 which is the IP address for time.google.com . It will then sync this time every 10 seconds to ensure that the correct time is recorded. The maximum logs stored is 10 however, this can be increased if necessary by changing "MAX_LOG_ENTRIES". If the logs are reset the old logs cannot be restored so caution should be taken when using this feature. 
+    Multiple Sensors:
+      Multiple sensors can be added by editing 
   Burglar Alarm Sensor:
     This should take ~2 minutes to start up because the IR-sensor needs 60 seconds to warm-up upon first loading.
     IR-Sensor:
